@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "105084336461",
+    "firebase_url": "https://irrigation-system-7aa74.firebaseio.com",
+    "project_id": "irrigation-system-7aa74",
+    "storage_bucket": "irrigation-system-7aa74.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105084336461:android:f8a94dab439f44f8951f04",
+        "android_client_info": {
+          "package_name": "com.example.hello_world"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "105084336461-a6uu2dule00jhp2mu511admr4u29an85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu_vvcycVd7FLruBCh-daMe58ugS_3wY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "105084336461-a6uu2dule00jhp2mu511admr4u29an85.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105084336461:android:5714f97838775c2c951f04",
+        "android_client_info": {
+          "package_name": "com.project.plant_irrigation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "105084336461-a6uu2dule00jhp2mu511admr4u29an85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu_vvcycVd7FLruBCh-daMe58ugS_3wY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "105084336461-a6uu2dule00jhp2mu511admr4u29an85.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
