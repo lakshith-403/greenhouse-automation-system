@@ -20,6 +20,30 @@ DHT dht(DHTPIN, DHTTYPE);
 
 int dst = 0;
 
+void firebaseSetup()
+{
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    Serial.print("Connecting to Wi-Fi");
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        Serial.print(".");
+        delay(300);
+    }
+    Serial.println();
+    Serial.print("Connected with IP: ");
+    Serial.println(WiFi.localIP());
+    Serial.println();
+
+    Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+    Firebase.reconnectWiFi(true);
+
+    //Set the size of WiFi rx/tx buffers in the case where we want to work with large data.
+    firebaseData2.setBSSLBufferSize(1024, 1024);
+
+    //Set the size of HTTP response buffers in the case where we want to work with large data.
+    firebaseData2.setResponseSize(1024);
+}
+
 
 int getSoilMoisture(){
   int sensorValue = digitalRead(SOILPIN);
