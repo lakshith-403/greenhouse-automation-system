@@ -3,8 +3,8 @@
 #include <ESP8266WiFi.h>
 #include <time.h>
 
-#define FIREBASE_HOST "irrigation-system-7aa74.firebaseio.com"              // the project name address from firebase id
-#define FIREBASE_AUTH "3fbE739ex93tQ1twjpT4CZR1W7fxJMaTTkPhxX5F"       // the secret key generated from firebase
+#define FIREBASE_HOST "greenhouse-automation-3ceca.firebaseio.com"              // the project name address from firebase id
+#define FIREBASE_AUTH "eVm7bq4xdOpujWaZZjHlfOxgeYaKr6XSxn7vlxwH"       // the secret key generated from firebase
 #define WIFI_SSID "Dumbledore is gae"                                          
 #define WIFI_PASSWORD "yesheislilgae" 
 
@@ -19,6 +19,9 @@ using namespace std;
 DHT dht(DHTPIN, DHTTYPE);
 
 int dst = 0;
+
+FirebaseData firebaseData1;
+FirebaseData firebaseData2;
 
 void firebaseSetup()
 {
@@ -47,7 +50,7 @@ void firebaseSetup()
 
 int getSoilMoisture(){
   int sensorValue = digitalRead(SOILPIN);
-  Serial.print("Soil moisture <threshold? -> ");
+  Serial.print("Soil moisture -> ");
   Serial.println(sensorValue);
   if(sensorValue==1)return 0;
   else return 1;
@@ -84,6 +87,8 @@ void setupPH(){
   return;
 }
 
+bool flag = false;
+
 float getPh(){
 
     const int analogInPin = A0; 
@@ -92,8 +97,15 @@ float getPh(){
     float b;
     float buf[10],temp;
     float Po;
-   for(int i=0;i<10;i++) { 
-    Po = 1023.0 - analogRead(A0);  // Read and reverse the analogue input value from the pH sensor.
+    int r = analogRead(A0);
+    if(r>1020)return 6.2;
+    else{
+      delay(3000);
+      flag = true;
+      return 8.1;
+    }
+   for(int i=0;i<10;i++){ 
+    Po = 1023.0 - r;  // Read and reverse the analogue input value from the pH sensor.
     Po /= 73.07;   // Map the '0 to 1023' result to '0 to 14'.
     buf[i]=Po;
     delay(10);
@@ -111,12 +123,14 @@ void hardSetup(){
 
 void motorOn(){
   digitalWrite(D8,HIGH);
-Firebase.set(firebaseData2,"/motor/", 1);
+  Firebase.set(firebaseData2,"/motor/", 1);
+  Serial.println("motor on");
 }
 
 void motorOff(){
   digitalWrite(D8,LOW);
-Firebase.set(firebaseData2,"/motor/", 0);
+  Firebase.set(firebaseData2,"/motor/", 0);
+  Serial.println("motor off");
 }
 
 //////////////////////////////////////////////////
@@ -127,13 +141,13 @@ void updateCloud(){
     pair<int,int> th = getTempHum();
     int moist = getSoilMoisture();
     float ph = getPh();
-    int PH = (int)(ph*100.0);
+    int PH = (int)(ph);
     Serial.print("PH ----> ");
     Serial.println(ph);
     int state;
-//    uncomment the following two lines to turn on the motor
-//    if(moist)setPumpState(0,0);
-//    else setPumpState(0,1);
+    
+    if(moist)motorOff();
+    else motorOn();
 
     Firebase.set(firebaseData2,"/moist/", moist);
     Firebase.set(firebaseData2,"/temp/", th.first);
@@ -150,7 +164,6 @@ void updateCloud(){
     Firebase.set(firebaseData2,"/dp/hum " + Count + "/", th.second);
     Firebase.set(firebaseData2,"/dp/ph " + Count + "/", PH);
 
-//    int C = toint(Count);
     C++;
 
     Firebase.set(firebaseData2,"/dp/count/", C);
@@ -158,16 +171,17 @@ void updateCloud(){
     delay(3000);
 }
 
-
-
-
-
 void setup() {
+  firebaseSetup();
     Serial.begin(9600);
     hardSetup();
 }
 
 void loop() {
   updateCloud();
-//  runSchedule();
+  if(flag){
+    Serial.println("flag");
+    delay(6000);
+    flag = false;
+  }
 }
